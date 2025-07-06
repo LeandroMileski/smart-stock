@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 public class SmartStockService {
 
     private final ReportService reportService;
+    private final PurchaseSectorService purchaseSectorService;
 
-    public SmartStockService(ReportService reportService) {
+    public SmartStockService(ReportService reportService, PurchaseSectorService purchaseSectorService) {
         this.reportService = reportService;
+        this.purchaseSectorService = purchaseSectorService;
     }
 
     public void start(String reportPath) {
@@ -32,7 +34,7 @@ public class SmartStockService {
                     // calculate how many items to buy (reorderThreshold) + (security factor(20%))
                     int orderQuantity = calculateOrderQuantity(item);
                     // buy more items, interacting with API of the supplier
-
+                    purchaseSectorService.sendPurchaseRequest(item, orderQuantity);
                     // save to mongoDB the bought items
 
                 }
