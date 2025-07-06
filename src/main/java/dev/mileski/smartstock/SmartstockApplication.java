@@ -12,4 +12,5 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 		SpringApplication.run(SmartstockApplication.class, args);
 	}
 
+
 }
