@@ -1,5 +1,6 @@
 package dev.mileski.smartstock.service;
 
+import dev.mileski.smartstock.domain.CsvStockItem;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,15 +24,28 @@ public class SmartStockService {
         }
         // 3. Process the stock report
         try {
-            var stockItems = reportService.readStockReport(reportPath);
+            var items = reportService.readStockReport(reportPath);
             // Process the stock items as needed
-            // For example, you might want to filter, aggregate, or transform the data
-            // This part is left as a placeholder for your specific processing logic
+            // To verify item by item (by stream) if stock is below reorder threshold
+            items.forEach(item -> {
+                if (item.getQuantity() < item.getReorderThreshold()) {
+                    // calculate how many items to buy (reorderThreshold) + (security factor(20%))
+                    int orderQuantity = calculateOrderQuantity(item);
+                    // buy more items, interacting with API of the supplier
+
+                    // save to mongoDB the bought items
+
+                }
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to process the stock report", e);
         }
 
         // 4. Log results of the processing to mongoDB
 
+    }
+
+    private Integer calculateOrderQuantity(CsvStockItem item) {
+        return item.getReorderThreshold() + (int) Math.ceil(item.getReorderThreshold() * 0.2);
     }
 }

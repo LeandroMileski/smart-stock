@@ -21,9 +21,15 @@ public class StartController {
     @PostMapping(path = "/start")
     public ResponseEntity<Void> start(@RequestBody StartDto dto) {
 
-        CompletableFuture.runAsync(() -> {
+        try {
+            CompletableFuture.runAsync(() -> {
                 smartStockService.start(dto.reportPath());
-        });
+            });
+        }
+        catch (Exception e) {
+            // Handle exceptions appropriately, e.g., log the error or return an error response
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseEntity.accepted().build();
     }
