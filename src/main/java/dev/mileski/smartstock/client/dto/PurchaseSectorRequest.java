@@ -14,7 +14,7 @@ public record PurchaseSectorRequest(@JsonProperty("item_id") String itemId,
                                     @JsonProperty("item_name") String itemName,
                                     @JsonProperty("supplier_name") String supplierName,
                                     @JsonProperty("supplier_email") String supplierEmail,
-                                    @JsonProperty("quantity") Integer orderQuantity)
+                                    @JsonProperty("quantity") Integer quantity)
                                     {
 
 }

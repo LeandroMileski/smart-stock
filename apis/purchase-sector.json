@@ -163,7 +163,7 @@
             },
             {
               "target": "header",
-              "modifier": "authorization",
+              "modifier": "Authorization",
               "value": "",
               "invert": false,
               "operator": "null"
