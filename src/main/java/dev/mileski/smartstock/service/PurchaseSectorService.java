@@ -3,10 +3,15 @@ package dev.mileski.smartstock.service;
 import dev.mileski.smartstock.client.PurchaseSectorClient;
 import dev.mileski.smartstock.client.dto.PurchaseSectorRequest;
 import dev.mileski.smartstock.domain.CsvStockItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PurchaseSectorService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseSectorService.class);
 
     private final AuthService authService;
     private final PurchaseSectorClient purchaseSectorClient;
@@ -17,8 +22,8 @@ public class PurchaseSectorService {
     }
 
     public boolean sendPurchaseRequest(CsvStockItem item,
-                                       Integer orderQuantity) {
-        if (item == null || orderQuantity <= 0) {
+                                       Integer quantity) {
+        if (item == null || quantity <= 0) {
             return false; // Invalid item or orderQuantity
         }
         // Send Auth to API and get the token.
@@ -30,13 +35,16 @@ public class PurchaseSectorService {
                 item.getItemName(),
                 item.getSupplierName(),
                 item.getSupplierEmail(),
-                orderQuantity
+                quantity
         );
         var response = purchaseSectorClient.sendPurchaseRequest(token, request);
 
-
-
         // Validate the response
+        if(response.getStatusCode().value() != HttpStatus.ACCEPTED.value()) {
+            logger.error("Failed to send purchase request for item {}: {}",
+                    item.getItemName(), response.getStatusCode());
+            return false;
+        }
         return true;
     }
 
